@@ -1,0 +1,63 @@
+[settings]
+experimental = true
+idiomatic_version_file_enable_tools = ["python"]
+python.uv_venv_auto = true
+
+[tools]
+cosign = "latest"
+gitleaks = "latest"
+python = "latest"
+uv = "latest"
+
+[hooks]
+enter = "mise install"
+
+[tasks.setup]
+description = "Install dependencies"
+alias = "s"
+run = "uv sync"
+
+[tasks.lint]
+description = "Run ruff linter with auto-fix"
+alias = "l"
+run = "uvx ruff check --fix"
+
+[tasks.format]
+description = "Run ruff formatter"
+alias = "f"
+run = "uvx ruff format"
+
+[tasks.typecheck]
+description = "Run ty typechecker"
+alias = "tc"
+run = "uvx ty check"
+
+[tasks.test]
+description = "Run pytest"
+alias = "t"
+run = "uvx pytest"
+
+[tasks.scan-secrets]
+description = "Scan for secrets using gitleaks"
+alias = "ss"
+run = "gitleaks git"
+
+[tasks.check]
+description = "Run all quality checks"
+alias = "c"
+depends = ["lint", "format", "typecheck", "scan-secrets"]
+# Enable test task once there is something to test,
+# otherwise the test fails and I cannot commit.
+# depends = ["lint", "format", "typecheck", "test", "scan-secrets"]
+
+[tasks.pre-commit]
+description = "Run all pre-commit tasks"
+depends = ["check"]
+
+[tasks.publish]
+description = "Publish package to ..."
+run = "uv publish ..."
+
+[tasks.ci]
+description = "Run all ci tasks"
+depends = ["setup", "check"]

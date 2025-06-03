@@ -1,0 +1,18 @@
+[tools]
+act = "latest"
+helix = "latest"
+lazygit = "latest"
+
+[hooks]
+enter = "mise install"
+
+# This might be redundant since uv sync seems to install all dev dependencies automatically
+# (even without --dev flag)
+# [tasks.setup]
+# description = "Install dev dependencies"
+# alias = "s"
+# run = "uv sync --dev"
+
+[tasks.test-ci]
+description = "Test github actions locally using act"
+run = "act"
